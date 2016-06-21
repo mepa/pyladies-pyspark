@@ -291,29 +291,15 @@ a.anchor-link {
 
 </div>
 </div>
-</div><aside class="notes">
-
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Q. Before I get started, I'm just curious, if I could see a show of hands, how many of you have used Spark before?<br>
-Q. How many of your are regular Python users?</p>
-
-</div>
-</div>
-</div>
-</aside></div></section></section><section><section>
+</div></div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Overview">Overview<a class="anchor-link" href="#Overview">&#182;</a></h1><ul>
-<li>Spark: What and Why?</li>
-<li>PySpark API</li>
-<li>Examples:<ul>
+<li>Spark and PySpark: What and Why</li>
+<li>Exercises:<ul>
 <li>Word Count</li>
 <li>Logistic Regression</li>
 <li>Clickstream</li>
@@ -339,32 +325,13 @@ Q. How many of your are regular Python users?</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="What-is-Spark?">What is Spark?<a class="anchor-link" href="#What-is-Spark?">&#182;</a></h2><p>In contrast to distributed shared memory systems where if you want fault taulerance you have to checkpoint the memory and roll back. RDDs - if you lost a partition of it you can reconstruct it through lineage.</p>
-<p>Especially helpful for iterative algorithms</p>
-<ul>
-<li>linear regression</li>
-<li>logistic regression</li>
-</ul>
-<p>RDDs do not need to be materialized at all time - they're lazily computed.</p>
-<p>Programmers can control 2 aspects of RDDs: caching and partitioning</p>
+<h2 id="What-is-Spark?">What is Spark?<a class="anchor-link" href="#What-is-Spark?">&#182;</a></h2><p>Spark is a fast and expressive cluster computing system for doing Big Data computation. It's good for iterative tasks, for doing big batch processing, and for interactive data exploration.</p>
+<p>It's compatible with Hadoop-supported file systems and data formats (HDFS, S3, SequenceFile, ...), so if you've been using Hadoop you can use it with your existing data and deploy it on your existing clusters.</p>
+<p>In contrast to distributed shared memory systems where if you want fault taulerance you have to checkpoint the memory and roll back. RDDs - if you lost a partition of it you can reconstruct it through lineage.</p>
 
 </div>
 </div>
 </div><aside class="notes">
-
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>So I'll just briefly give an introduction to what is Spark, for those of you who may be new to it.</p>
-<p>Spark is a fast and expressive cluster computing system for doing Big Data computation. It's good for iterative tasks, for doing big batch processing, and for interactive data exploration.</p>
-<p>And it's compatible with Hadoop-supported file systems and data formats (HDFS, S3, SequenceFile, ...), so you can use it with your existing data and deploy it on your existing clusters.</p>
-
-</div>
-</div>
-</div>
-</aside><aside class="notes">
 
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -429,8 +396,10 @@ Q. How many of your are regular Python users?</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Spark-Architecture">Spark Architecture<a class="anchor-link" href="#Spark-Architecture">&#182;</a></h2><ul>
 <li>Spark Driver and Workers</li>
-<li>SparkContext (replaced by SparkSession in version 2.X)</li>
+<li>SparkContext (replaced by SparkSession in version 2.X)
+"Spark applications run as independent sets of processes on a cluster, coordinated by the SparkContext object in your main program (called the driver program).</li>
 </ul>
+<p>"Specifically, to run on a cluster, the SparkContext can connect to several types of cluster managers (either Spark’s own standalone cluster manager, Mesos or YARN), which allocate resources across applications. Once connected, Spark acquires executors on nodes in the cluster, which are processes that run computations and store data for your application. Next, it sends your application code (defined by JAR or Python files passed to SparkContext) to the executors. Finally, SparkContext sends tasks to the executors to run."</p>
 <p><img src=images/cluster-overview.png align="center" width="75%"></p>
 <h4 align='right'>https://spark.apache.org/docs/1.1.0/cluster-overview.html</h4>
 </div>
@@ -515,11 +484,56 @@ Q. How many of your are regular Python users?</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The basic unit of abstraction in Spark to represent your data is an RDD, or a Resilient Distributed Dataset. It's an immutable, partitioned collection of objects.</p>
 <p>You can create a bunch of different sources, parallelize your data from a text file - it's this big partitioned collection of objects. And the way that you express your computation is by performing</p>
+<p>RDDs do not need to be materialized at all time - they're lazily computed.</p>
+<p>Programmers can control 2 aspects of RDDs: caching and partitioning</p>
 
 </div>
 </div>
 </div>
 </aside></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="What-is-PySpark?">What is PySpark?<a class="anchor-link" href="#What-is-PySpark?">&#182;</a></h2><ul>
+<li>Write Spark jobs in Python</li>
+<li>Run interactive jobs in the shell</li>
+<li>Supports numpy, pandas and other Python libraries</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Why-use-PySpark?">Why use PySpark?<a class="anchor-link" href="#Why-use-PySpark?">&#182;</a></h2><ul>
+<li>If you already know Python</li>
+<li>Can use Spark in tandem with your favorite Python libraries</li>
+<li>If you don't need Python libraries, maybe just write code in Scala</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="PySpark's-core-classes:">PySpark's core classes:<a class="anchor-link" href="#PySpark's-core-classes:">&#182;</a></h3><h4 id="pyspark.SparkContext">pyspark.SparkContext<a class="anchor-link" href="#pyspark.SparkContext">&#182;</a></h4><p>Main entry point for Spark functionality.</p>
+<h4 id="pyspark.RDD">pyspark.RDD<a class="anchor-link" href="#pyspark.RDD">&#182;</a></h4><p>A Resilient Distributed Dataset (RDD), the basic abstraction in Spark.</p>
+<h4 id="pyspark.streaming.StreamingContext">pyspark.streaming.StreamingContext<a class="anchor-link" href="#pyspark.streaming.StreamingContext">&#182;</a></h4><p>Main entry point for Spark Streaming functionality.</p>
+<h4 id="pyspark.streaming.DStream">pyspark.streaming.DStream<a class="anchor-link" href="#pyspark.streaming.DStream">&#182;</a></h4><p>A Discretized Stream (DStream), the basic abstraction in Spark Streaming.</p>
+<h4 id="pyspark.sql.SQLContext">pyspark.sql.SQLContext<a class="anchor-link" href="#pyspark.sql.SQLContext">&#182;</a></h4><p>Main entry point for DataFrame and SQL functionality.</p>
+<h4 id="pyspark.sql.DataFrame">pyspark.sql.DataFrame<a class="anchor-link" href="#pyspark.sql.DataFrame">&#182;</a></h4><p>A distributed collection of data grouped into named columns.</p>
+
+</div>
+</div>
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
@@ -533,7 +547,7 @@ Q. How many of your are regular Python users?</p>
 <thead><tr>
 <th style="text-align:center">Transformation</th>
 <th style="text-align:center">Description</th>
-<th style="text-align:center">Type*</th>
+<th style="text-align:center">Type</th>
 </tr>
 </thead>
 <tbody>
@@ -569,7 +583,6 @@ Q. How many of your are regular Python users?</p>
 </tr>
 </tbody>
 </table>
-<p>* <strong>Narrow</strong> transformations are local to each node and don't imply transfering information across the network. <strong>Wide</strong> transformations</p>
 
 </div>
 </div>
@@ -636,8 +649,7 @@ Q. How many of your are regular Python users?</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>* Try it Out:</p>
-<ol>
+<h3 id="*-Try-it-Out:">* Try it Out:<a class="anchor-link" href="#*-Try-it-Out:">&#182;</a></h3><ol>
 <li>Go to your databricks Workspace and create a new directory within your Users directory called "2016-06-20-pyladies-pyspark" </li>
 <li>Create a notebook called "0-Introduction"  within this directory</li>
 <li>Type or copy/paste lines of code into separate cells and run them (you will be prompted to launch a cluster) </li>
@@ -686,75 +698,13 @@ Q. How many of your are regular Python users?</p>
 </div>
 </div>
 
-</div></div></section></section><section><section>
+</div></div></section><section>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="PySpark-API">PySpark API<a class="anchor-link" href="#PySpark-API">&#182;</a></h1><p>We'll focus on learning the main API calls needed for running Spark jobs through examples.</p>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="What-is-PySpark?">What is PySpark?<a class="anchor-link" href="#What-is-PySpark?">&#182;</a></h2><ul>
-<li>Write Spark jobs in Python</li>
-<li>Run interactive jobs in the shell</li>
-<li>Supports C extensions</li>
-</ul>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Core-classes:">Core classes:<a class="anchor-link" href="#Core-classes:">&#182;</a></h3><h4 id="pyspark.SparkContext">pyspark.SparkContext<a class="anchor-link" href="#pyspark.SparkContext">&#182;</a></h4><p>Main entry point for Spark functionality.</p>
-<h4 id="pyspark.RDD">pyspark.RDD<a class="anchor-link" href="#pyspark.RDD">&#182;</a></h4><p>A Resilient Distributed Dataset (RDD), the basic abstraction in Spark.</p>
-<h4 id="pyspark.streaming.StreamingContext">pyspark.streaming.StreamingContext<a class="anchor-link" href="#pyspark.streaming.StreamingContext">&#182;</a></h4><p>Main entry point for Spark Streaming functionality.</p>
-<h4 id="pyspark.streaming.DStream">pyspark.streaming.DStream<a class="anchor-link" href="#pyspark.streaming.DStream">&#182;</a></h4><p>A Discretized Stream (DStream), the basic abstraction in Spark Streaming.</p>
-<h4 id="pyspark.sql.SQLContext">pyspark.sql.SQLContext<a class="anchor-link" href="#pyspark.sql.SQLContext">&#182;</a></h4><p>Main entry point for DataFrame and SQL functionality.</p>
-<h4 id="pyspark.sql.DataFrame">pyspark.sql.DataFrame<a class="anchor-link" href="#pyspark.sql.DataFrame">&#182;</a></h4><p>A distributed collection of data grouped into named columns.</p>
-
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Why-use-PySpark?">Why use PySpark?<a class="anchor-link" href="#Why-use-PySpark?">&#182;</a></h2><ul>
-<li>If you already know Python</li>
-<li>Can use Spark in tandem with your favorite Python libraries</li>
-<li>If you don't need Python libraries, maybe just write code in Scala</li>
-</ul>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Examples">Examples<a class="anchor-link" href="#Examples">&#182;</a></h1>
-</div>
-</div>
-</div></section><section>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Example-1:-Word-Count">Example 1: Word Count<a class="anchor-link" href="#Example-1:-Word-Count">&#182;</a></h3>
+<h3 id="Example:-Log-Mining">Example: Log Mining<a class="anchor-link" href="#Example:-Log-Mining">&#182;</a></h3>
 </div>
 </div>
 </div><div class="fragment">
@@ -763,35 +713,61 @@ Q. How many of your are regular Python users?</p>
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.context</span> <span class="k">import</span> <span class="n">SparkContext</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">val</span> <span class="n">lines</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s2">&quot;hdfs://...&quot;</span><span class="p">)</span>
+<span class="n">val</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">_</span><span class="o">.</span><span class="n">startsWith</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">))</span>
+<span class="n">val</span> <span class="n">messages</span> <span class="o">=</span> <span class="n">errors</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)(</span><span class="mi">2</span><span class="p">))</span>
 
-<span class="n">sc</span> <span class="o">=</span> <span class="n">SparkContext</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="n">lines</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">counts</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">flatMap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> \
-                      <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> \
-                      <span class="o">.</span><span class="n">reduceByKey</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">))</span>
-
-<span class="k">for</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">collect</span><span class="p">():</span>
-    <span class="nb">print</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> : </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+<span class="n">messages</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">_</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">count</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
 </div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The computation is expressed declaratively and nothing actually takes place until calling <code>count</code> at the end.</p>
+
+</div>
+</div>
+</div></div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Exercises">Exercises<a class="anchor-link" href="#Exercises">&#182;</a></h1>
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Exercise-1:-Word-Count">Exercise 1: Word Count<a class="anchor-link" href="#Exercise-1:-Word-Count">&#182;</a></h2><p>Create a few transformations to build a dataset of (String, Int) pairs called counts and then save it to a file.</p>
+<ol>
+<li>Create a notebook in "2016-06-20-pyladies-pyspark" called "1-WordCount"</li>
+<li>Try to implement the following Word Count example:</li>
+</ol>
+<p><a href="http://spark.apache.org/examples.html">http://spark.apache.org/examples.html</a></p>
+
+</div>
+</div>
+</div></div><div class="fragment">
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get initial RDD from the context</span>
-<span class="n">file</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s2">&quot;hdfs://...&quot;</span><span class="p">)</span>
-<span class="c1"># Three consecutive transformation of the RDD</span>
-<span class="n">counts</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">flatMap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">))</span>
-             <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">text_file</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s2">&quot;hdfs://...&quot;</span><span class="p">)</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="n">text_file</span><span class="o">.</span><span class="n">flatMap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">))</span> \
+             <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> \
              <span class="o">.</span><span class="n">reduceByKey</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
-<span class="c1"># Materialize the RDD using an action</span>
 <span class="n">counts</span><span class="o">.</span><span class="n">saveAsTextFile</span><span class="p">(</span><span class="s2">&quot;hdfs://...&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -805,7 +781,16 @@ Q. How many of your are regular Python users?</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Example-2:-Logistic-Regression">Example 2: Logistic Regression<a class="anchor-link" href="#Example-2:-Logistic-Regression">&#182;</a></h3>
+<h2 id="Exercise-2:-Logistic-Regression">Exercise 2: Logistic Regression<a class="anchor-link" href="#Exercise-2:-Logistic-Regression">&#182;</a></h2><ol>
+<li>Create a notebook in "2016-06-20-pyladies-pyspark" called "2-LogisticRegression"</li>
+<li>Try to implement one of the following Logistic Regression examples:<ul>
+<li><a href="http://spark.apache.org/examples.html">http://spark.apache.org/examples.html</a> (Prediction with Logistic Regression)</li>
+<li><a href="https://github.com/apache/spark/blob/master/examples/src/main/python/mllib/logistic_regression.py">https://github.com/apache/spark/blob/master/examples/src/main/python/mllib/logistic_regression.py</a></li>
+<li><a href="https://github.com/apache/spark/blob/master/examples/src/main/python/logistic_regression.py">https://github.com/apache/spark/blob/master/examples/src/main/python/logistic_regression.py</a></li>
+</ul>
+</li>
+</ol>
+
 </div>
 </div>
 </div><div class="fragment">
@@ -839,7 +824,12 @@ Q. How many of your are regular Python users?</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Example-3:-Clickstream">Example 3: Clickstream<a class="anchor-link" href="#Example-3:-Clickstream">&#182;</a></h3>
+<h3 id="Example-3:-Clickstream">Example 3: Clickstream<a class="anchor-link" href="#Example-3:-Clickstream">&#182;</a></h3><ol>
+<li>Create a notebook in "2016-06-20-pyladies-pyspark" called "3-Clickstream"</li>
+<li>Implement the Clickstream example from the Databricks "Quick Start DataFrames" notebook in Python</li>
+<li>Or just run through the example in Scala</li>
+</ol>
+
 </div>
 </div>
 </div>
@@ -873,7 +863,7 @@ Q. How many of your are regular Python users?</p>
 
 </div>
 </div>
-</div>
+</div><div class="fragment">
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
@@ -887,7 +877,7 @@ Q. How many of your are regular Python users?</p>
 
 </div>
 </div>
-</div></section></section><section><section>
+</div></div></section><section>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
